@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import {View, Dimensions} from 'react-native';
 import Svg, {Path} from 'react-native-svg';
 import Animated, {
@@ -24,10 +24,15 @@ const App = () => {
     interval: 10,
   });
 
-  const [x, setX] = useState(Math.abs(animatedSensor.sensor.value.x));
-  const [y, setY] = useState(Math.abs(animatedSensor.sensor.value.y));
+  const style = useAnimatedStyle(() => {
+    const x = animatedSensor.sensor.value.x;
+    const y = animatedSensor.sensor.value.y;
+    return {
+      transform: [{translateX: x * 2}, {translateY: y * 2}],
+      duration: 5000,
+    };
+  });
 
-  console.log(x + ' ' + y);
   useEffect(() => {
     progress.value = withRepeat(
       withTiming(1, {duration: 2500, easing: Easing.inOut(Easing.ease)}),
@@ -40,20 +45,20 @@ const App = () => {
     const m = mix.bind(null, progress.value);
     return {
       from: {
-        x: m(-0.5 + 2 * x, -1 + 2 * x),
-        y: m(0 + y, 0.5 + y),
+        x: m(-0.5, -1),
+        y: m(0, 0.5),
       },
       c1: {
-        x: m(0 + x, 0.5 + x),
-        y: m(0.5 + y, 1 + y),
+        x: m(0, 0.5),
+        y: m(0.5, 1),
       },
       c2: {
-        x: m(1 + x, 0.5 + x),
-        y: m(0.5 + y, 0 + y),
+        x: m(1, 0.5),
+        y: m(0.5, 0),
       },
       to: {
-        x: m(1.5 + x, 2 + x),
-        y: m(0.5 + y, 1 + y),
+        x: m(1.5, 2),
+        y: m(0.5, 1),
       },
     };
   });
@@ -80,11 +85,11 @@ const App = () => {
             }}
           />
         }>
-        {/* <Animated.View style={style}> */}
-        <Svg width={SIZE} height={SIZE} viewBox="0 0 1 1">
-          <AnimatedPath fill="#3884ff" animatedProps={path} />
-        </Svg>
-        {/* </Animated.View> */}
+        <Animated.View style={style}>
+          <Svg width={SIZE} height={SIZE} viewBox="0 0 1 1">
+            <AnimatedPath fill="#3884ff" animatedProps={path} />
+          </Svg>
+        </Animated.View>
       </MaskedView>
     </View>
   );
