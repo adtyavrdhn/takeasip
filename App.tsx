@@ -77,7 +77,7 @@ const App = () => {
           />
         }>
         <Svg width={SIZE} height={SIZE} viewBox="0 0 1 1">
-          <AnimatedPath fill="#86b4ff" animatedProps={path2} />
+          {/* <AnimatedPath fill="#86b4ff" animatedProps={path2} /> */}
           <AnimatedPath fill="#3884ff" animatedProps={path1} />
         </Svg>
       </MaskedView>
