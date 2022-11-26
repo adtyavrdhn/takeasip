@@ -11,8 +11,8 @@ import Animated, {
 } from 'react-native-reanimated';
 import MaskedView from '@react-native-masked-view/masked-view';
 import {mix} from 'react-native-redash';
+const SIZE = Dimensions.get('window').width;
 
-const SIZE = Dimensions.get('window').width - 64;
 const AnimatedPath = Animated.createAnimatedComponent(Path);
 const App = () => {
   const progress = useSharedValue(0);
@@ -63,9 +63,8 @@ const App = () => {
     <View
       style={{
         flex: 1,
-        justifyContent: 'center',
+        justifyContent: 'flex-end',
         alignItems: 'center',
-        backgroundColor: 'black',
       }}>
       <MaskedView
         maskElement={
@@ -74,17 +73,12 @@ const App = () => {
               backgroundColor: 'black',
               width: SIZE,
               height: SIZE,
-              borderRadius: SIZE / 2,
             }}
           />
         }>
-        <Svg
-          width={SIZE}
-          height={SIZE}
-          style={{backgroundColor: '#242424'}}
-          viewBox="0 0 1 1">
+        <Svg width={SIZE} height={SIZE} viewBox="0 0 1 1">
           <AnimatedPath fill="#86b4ff" animatedProps={path2} />
-          <AnimatedPath fill="3884ff" animatedProps={path1} />
+          <AnimatedPath fill="#3884ff" animatedProps={path1} />
         </Svg>
       </MaskedView>
     </View>
