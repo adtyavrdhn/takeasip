@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, Dimensions} from 'react-native';
 import Svg, {Path} from 'react-native-svg';
 import Animated, {
@@ -16,9 +16,12 @@ const SIZE = Dimensions.get('window').width;
 const AnimatedPath = Animated.createAnimatedComponent(Path);
 const App = () => {
   const progress = useSharedValue(0);
+
+  const [accVals, setAccVals] = useState({x: 0, y: 0, z: 0});
+
   useEffect(() => {
     progress.value = withRepeat(
-      withTiming(1, {duration: 3000, easing: Easing.inOut(Easing.ease)}),
+      withTiming(1, {duration: 2600, easing: Easing.inOut(Easing.ease)}),
       -1,
       true,
     );
@@ -27,12 +30,12 @@ const App = () => {
     const m = mix.bind(null, progress.value);
     return {
       from: {
-        x: m(-0.7, -1),
-        y: m(0.3, 0.5),
+        x: m(-0.5, -1),
+        y: m(0, 0.5),
       },
-      c1: {x: m(0, 0.5), y: m(0.9, 1)},
-      c2: {x: m(1, 0.5), y: m(0.3, 0)},
-      to: {x: m(1.4, 2), y: m(0.8, 0.6)},
+      c1: {x: m(0, 0.5), y: m(0.5, 1)},
+      c2: {x: m(1, 0.5), y: m(0.5, 0)},
+      to: {x: m(1.5, 2), y: m(0.5, 1)},
     };
   });
   const path1 = useAnimatedProps(() => {
