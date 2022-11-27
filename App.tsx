@@ -1,5 +1,5 @@
-import React, {useEffect} from 'react';
-import {View, Dimensions} from 'react-native';
+import React, {useEffect, useState, useRef} from 'react';
+import {View, Dimensions, Button} from 'react-native';
 import Svg, {Path} from 'react-native-svg';
 import Animated, {
   useAnimatedProps,
@@ -11,35 +11,47 @@ import Animated, {
   withTiming,
   useAnimatedSensor,
   Easing,
+  EasingNode,
 } from 'react-native-reanimated';
-import MaskedView from '@react-native-masked-view/masked-view';
 import {mix} from 'react-native-redash';
-const SIZE = Dimensions.get('window').width;
 
 const AnimatedPath = Animated.createAnimatedComponent(Path);
+
+const DEFAULT_DURATION = 2500;
 const App = () => {
   const progress = useSharedValue(0);
-
-  const animatedSensor = useAnimatedSensor(SensorType.GYROSCOPE, {
-    interval: 10,
-  });
-
-  const style = useAnimatedStyle(() => {
-    const x = animatedSensor.sensor.value.x;
-    const y = animatedSensor.sensor.value.y;
-    return {
-      transform: [{translateX: x * 2}, {translateY: y * 2}],
-      duration: 5000,
-    };
-  });
+  // const [shake, setShake] = useState(false);
+  const [size, setSize] = useState(Dimensions.get('window').width);
+  const height = useRef(new Animated.Value(size)).current;
 
   useEffect(() => {
     progress.value = withRepeat(
-      withTiming(1, {duration: 2500, easing: Easing.inOut(Easing.ease)}),
+      withTiming(1, {
+        duration: DEFAULT_DURATION,
+        easing: Easing.inOut(Easing.ease),
+      }),
       -1,
       true,
+      // () => {
+      //   setShake(false);
+      // },
     );
   }, [progress]);
+
+  const animatedStyles = {
+    width: size,
+    height: height,
+  };
+
+  const animate = newSize => {
+    Animated.timing(height, {
+      toValue: newSize,
+      duration: 2500,
+      easing: EasingNode.ease,
+    }).start();
+
+    setSize(size + 50);
+  };
 
   const data = useDerivedValue(() => {
     const m = mix.bind(null, progress.value);
@@ -74,23 +86,18 @@ const App = () => {
         flex: 1,
         justifyContent: 'flex-end',
         alignItems: 'center',
+        backgroundColor: 'white',
       }}>
-      <MaskedView
-        maskElement={
-          <View
-            style={{
-              backgroundColor: 'black',
-              width: SIZE * 5,
-              height: SIZE,
-            }}
-          />
-        }>
-        <Animated.View style={style}>
-          <Svg width={SIZE} height={SIZE} viewBox="0 0 1 1">
-            <AnimatedPath fill="#3884ff" animatedProps={path} />
-          </Svg>
-        </Animated.View>
-      </MaskedView>
+      <Animated.View style={animatedStyles}>
+        <Svg viewBox="0 0 1 1" style={{position: 'absolute', bottom: 0}}>
+          <AnimatedPath fill="#3884ff" animatedProps={path} />
+        </Svg>
+      </Animated.View>
+      <Button
+        title="num"
+        onPress={() => {
+          animate(size + 50);
+        }}></Button>
     </View>
   );
 };
