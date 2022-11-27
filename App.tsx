@@ -4,14 +4,12 @@ import Svg, {Path} from 'react-native-svg';
 import Animated, {
   useAnimatedProps,
   useDerivedValue,
-  useAnimatedStyle,
-  SensorType,
   useSharedValue,
   withRepeat,
   withTiming,
-  useAnimatedSensor,
   Easing,
   EasingNode,
+  Adaptable,
 } from 'react-native-reanimated';
 import {mix} from 'react-native-redash';
 
@@ -20,7 +18,6 @@ const AnimatedPath = Animated.createAnimatedComponent(Path);
 const DEFAULT_DURATION = 2500;
 const App = () => {
   const progress = useSharedValue(0);
-  // const [shake, setShake] = useState(false);
   const [size, setSize] = useState(Dimensions.get('window').width);
   const height = useRef(new Animated.Value(size)).current;
 
@@ -32,9 +29,6 @@ const App = () => {
       }),
       -1,
       true,
-      // () => {
-      //   setShake(false);
-      // },
     );
   }, [progress]);
 
@@ -43,7 +37,7 @@ const App = () => {
     height: height,
   };
 
-  const animate = newSize => {
+  const animate = (newSize: Adaptable<number>) => {
     Animated.timing(height, {
       toValue: newSize,
       duration: 2500,
